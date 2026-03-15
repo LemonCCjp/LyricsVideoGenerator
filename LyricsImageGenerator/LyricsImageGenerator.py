@@ -34,10 +34,9 @@ async def create_solid_image(hex_color, filename="output.png"):
     width = 1920
     height = 1080
     
-    rgb = hex_to_rgb(hex_color)
+    rgb = await hex_to_rgb(hex_color)
     
     img = Image.new("RGB", (width, height), rgb)
-    img.save(filename)
     return img
 
 
@@ -45,10 +44,9 @@ async def create_title_background_image(hex_color, filename="output.png"):
     width = 1610
     height = 400
     
-    rgb = hex_to_rgb(hex_color)
+    rgb = await hex_to_rgb(hex_color)
     
     img = Image.new("RGB", (width, height), rgb)
-    img.save(filename)
     return img
 
 
@@ -74,9 +72,9 @@ async def create_italic_text_image(
     width = 1610
     height = 400
 
-    bg_color = hex_to_rgb(bg_hex)
-    text_color = hex_to_rgb(text_hex)
-    outline_color = hex_to_rgb(outline_hex)
+    bg_color = await hex_to_rgb(bg_hex)
+    text_color = await hex_to_rgb(text_hex)
+    outline_color = await hex_to_rgb(outline_hex)
 
     # 背景
     bg = img
@@ -113,8 +111,9 @@ async def create_italic_text_image(
 
     # 背景に合成
     bg.paste(italic, (310, 340), italic)
-
-    bg.save(filename)
+    
+    # タイトル結果保存
+    bg.save(fr"output/images/title.png")
 
 
 async def draw_korean(img, texts, pattern=0, font_path=templates.socialism["font_path"]):
@@ -197,8 +196,8 @@ async def draw_texts(img, texts, font_path):
     return img
 
 
-async def create_title_image(texts, background_color, font_path, title_background_color, ko_title_font_size, ja_title_font_size, lyricist=None, composer=None, performer=None):
-    img = create_solid_image(background_color)
+async def create_title_image(korean_title, japanese_title,  background_color, title_background_color, font_path, ko_title_font_size, ja_title_font_size, lyricist=None, composer=None, performer=None):
+    img = await create_solid_image(background_color)
     title_image = await create_title_background_image(title_background_color)
     img.paste(title_image, (310, 340))
 
@@ -207,7 +206,7 @@ async def create_title_image(texts, background_color, font_path, title_backgroun
     await create_italic_text_image(
         img,
         bg_hex="#1A1A40",
-        text=texts[0],
+        text=korean_title,
         italic_angle=15,
         font=font,
         text_position=(0, 100)
@@ -218,7 +217,7 @@ async def create_title_image(texts, background_color, font_path, title_backgroun
     await create_italic_text_image(
         img,
         bg_hex="#1A1A40",
-        text=texts[1],
+        text=japanese_title,
         italic_angle=15,
         font=font,
         text_hex="#FFFF00",
@@ -240,13 +239,12 @@ async def create_title_image(texts, background_color, font_path, title_backgroun
         font = ImageFont.truetype(font_path, 50)
         img = await draw_performer(img, performer, font)
 
-    return imageToFile(img)
+    return await imageToFile(img)
 
 
-async def create_lyrics_image(texts, background_color, font_path):
+async def create_lyrics_image(texts, background_color, font_path, file_name):
     img = await create_solid_image(background_color)
     img = await draw_texts(img, texts, font_path)
-    
-    img.save("output.png") 
+    img.save(fr"output/images/{file_name}.png")
 
-    return imageToFile(img)
+    return await imageToFile(img)
