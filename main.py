@@ -63,6 +63,7 @@ class CreateDatas:
                 img = await LyricsImageGenerator.create_lyrics_image(lyrics, settings.back_ground_color_1, settings.font_file_path, file_name)
                 imgs.append({"image": img, "display_time": str(lyrics_datas["표시시간"])})
 
+        imgs.sort(key=lambda x: float(x.get("display_time", float("inf"))))
         return imgs
     
 
@@ -79,7 +80,6 @@ class CreateDatas:
         if not await VideoMaker.time_to_seconds(title_display_time) is None:
             ims.append((title_img, tmp_time, title_display_time))
             tmp_time = title_display_time
-        
         
         for lyrics_imgs_data in lyrics_imgs_datas:
             lyrics_img = lyrics_imgs_data["image"]
