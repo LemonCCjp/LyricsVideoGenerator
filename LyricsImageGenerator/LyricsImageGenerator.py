@@ -112,8 +112,6 @@ async def create_italic_text_image(
     # 背景に合成
     bg.paste(italic, (310, 340), italic)
     
-    # タイトル結果保存
-    bg.save(fr"output/images/title.png")
 
 
 async def draw_korean(img, texts, pattern=0, font_path=templates.socialism["font_path"]):
@@ -170,8 +168,8 @@ async def draw_composer(img, texts, font):
 
 async def draw_performer(img, texts, font):
     draw = ImageDraw.Draw(img)
-
-    draw.text((310, 810), f"연주:{texts}", font=font, fill="#FFFFFF", stroke_width=0, stroke_fill="#ffffFF")
+ 
+    draw.text((1900, 750), f"연주:{texts}", font=font, fill="#FFFFFF", stroke_width=0, stroke_fill="#ffffFF", anchor="ra", align="right")
     return img
 
 
@@ -239,6 +237,8 @@ async def create_title_image(korean_title, japanese_title,  background_color, ti
         font = ImageFont.truetype(font_path, 50)
         img = await draw_performer(img, performer, font)
 
+    # タイトル結果保存
+    img.save(fr"output/images/title.png")
     return await imageToFile(img)
 
 

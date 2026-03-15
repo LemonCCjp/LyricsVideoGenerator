@@ -17,25 +17,32 @@ ImageData = Union[bytes, Image.Image, np.ndarray]
 ImageSpec = Tuple[ImageData, str, str]
 
 
-async def time_to_seconds(t: str) -> float:
-    parts = t.split(":")
+async def time_to_seconds(t: str) -> float | None:
+    try:
+        parts = t.split(":")
 
-    if len(parts) == 3:
-        # H:MM:SS
-        h = int(parts[0])
-        m = int(parts[1])
-        s = float(parts[2])
-        return h * 3600 + m * 60 + s
+        if len(parts) == 3:
+            # H:MM:SS
+            h = int(parts[0])
+            m = int(parts[1])
+            s = float(parts[2])
+            return h * 3600 + m * 60 + s
 
-    elif len(parts) == 2:
-        # M:SS
-        m = int(parts[0])
-        s = float(parts[1])
-        return m * 60 + s
+        elif len(parts) == 2:
+            # M:SS
+            m = int(parts[0])
+            s = float(parts[1])
+            return m * 60 + s
 
-    else:
-        # 秒のみ入力
-        return float(t)
+        elif len(parts) == 1:
+            # 秒のみ
+            return float(t)
+
+        else:
+            return None
+
+    except (ValueError, TypeError):
+        return None
 
 
 async def seconds_to_frames(seconds: float) -> int:
@@ -177,7 +184,7 @@ async def create_clip(index: int, image, start: str, end: str) -> str:
 
 async def images_data_to_mp4(
     images: List[ImageSpec],
-    output_path: str = "動画/output.mp4",
+    output_path: str = "output/videos/output.mp4",
     cleanup: bool = True,
     synthesize: bool = False,
     video_path = None
