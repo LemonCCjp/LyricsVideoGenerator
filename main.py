@@ -92,13 +92,15 @@ class CreateDatas:
                 tmp_time = lyrics_display_time
 
         synthesize = False
-        video_path = "output/downloaded_videos/downloaded.mp3"
-        if not os.path.isfile(video_path):
+        video_path = "output\downloaded_videos\downloaded.mp3"
+        if os.path.isfile(video_path):
+            synthesize = True
+            
+        else:
             video_path = None
         
-
-
-        if not settings.video_url == "" or not settings.video_url is None:
+        
+        if not settings.video_url is None or not settings.video_url is None:
             video_title, video_path = await VideoDownloader.download_video(settings.video_url)
             if not video_title is None:
                 synthesize = True
