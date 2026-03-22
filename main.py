@@ -2,6 +2,7 @@ import pprint
 import asyncio
 import yaml
 import glob
+import os
 
 from LyricsImageGenerator import LyricsImageGenerator
 from VideoMaker import VideoMaker
@@ -91,7 +92,12 @@ class CreateDatas:
                 tmp_time = lyrics_display_time
 
         synthesize = False
-        video_path = None
+        video_path = "output/downloaded_videos/downloaded.mp3"
+        if not os.path.isfile(video_path):
+            video_path = None
+        
+
+
         if not settings.video_url == "" or not settings.video_url is None:
             video_title, video_path = await VideoDownloader.download_video(settings.video_url)
             if not video_title is None:
